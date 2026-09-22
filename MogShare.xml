@@ -1,0 +1,159 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<!--<Script file="Rested.lua"/> -->
+	<!-- Version 2.0 -->
+	<Button  name="MSSet_template" enableMouse="true" virtual="true" mixin="MS.Set_mixin" registerForClicks="LeftButtonUp, RightButtonUp">
+		<Size x="320" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="SelectedTexture" hidden="true">
+					<Color r="1" g="0.82" b="0" a="0.3"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parent_SetText" parentKey="Text" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Size x="250" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="ActionButton" inherits="UIPanelButtonTemplate">
+				<Size x="80" y="20"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>self:GetParent():OnActionButtonClick(button)</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnClick method="OnRowClick"/>
+		</Scripts>
+	</Button>
+
+	<Frame name="MogShareFrame" toplevel="false" parent="UIParent" enableMouse="false" movable="false">
+		<Scripts>
+			<OnLoad>
+				MS.OnLoad()
+			</OnLoad>
+			<OnEvent>
+				MS[event]( ... )
+			</OnEvent>
+		</Scripts>
+	</Frame>
+	<Frame name="MogShareDisplayFrame" toplevel="false" parent="UIParent" enableMouse="true" movable="false" hidden="true">
+		<Size x="340" y="500" />
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parent_BG" file="Interface\DialogFrame\UI-DialogBox-Background">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parent_Header" inherits="GameFontNormalLarge" text="MogShare">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP">
+							<Offset x="0" y="-10"/>
+						</Anchor>
+					</Anchors>
+					<Scripts>
+						<OnLoad>self:SetText("MogShare "..MS.MSG_VERSION)</OnLoad>
+					</Scripts>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parent_Close" inherits="UIPanelCloseButton" parent="MogShareDisplayFrame">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>self:GetParent():Hide()</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parent_SortDropDownMenu" inherits="UIDropDownMenuTemplate" parentKey="SortDropDownMenu">
+				<Size x="50" y="16" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="0" y="-30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="$parent_GameButton" parentKey="GameButton" inherits="UIPanelButtonTemplate">
+				<Size x="76" y="30" />
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_SortDropDownMenu">
+						<Offset>
+							<AbsDimension x="170" y="2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>self:SetText("Mog War")</OnLoad>
+					<OnClick>MS.GameButtonOnClick()</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="$parent_MogList" parentKey="MogList">
+				<Size x="320" y="420"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="10" y="-70"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnMouseWheel>MS.UIMouseWheel( delta )</OnMouseWheel>
+				</Scripts>
+			</Frame>
+			<Slider name="$parent_MogListVSlider" orientation="VERTICAL" minValue="0" maxValue="100" defaultValue="0" valueStep="1">
+				<Size x="12" y="420"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent_MogList"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0" g="0" b="0" a="1" />
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>self:SetValue(0)</OnLoad>
+					<OnValueChanged>MS.UIUpdate()</OnValueChanged>
+				</Scripts>
+				<ThumbTexture name="$parentThumbTexture" file="Interface\Buttons\UI-ScrollBar-Knob">
+					<Size x="12" y="25"/>
+				</ThumbTexture>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>MS.UIOnLoad(self)</OnLoad>
+			<OnShow>MS.UIOnShow(self)</OnShow>
+			<OnHide>MS.UIOnHide(self)</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>
