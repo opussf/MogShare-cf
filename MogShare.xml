@@ -50,7 +50,7 @@
 		</Scripts>
 	</Frame>
 	<Frame name="MogShareDisplayFrame" toplevel="false" parent="UIParent" enableMouse="true" movable="false" hidden="true">
-		<Size x="340" y="500" />
+		<Size x="342" y="500" />
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>
@@ -114,7 +114,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="10" y="-70"/>
+							<AbsDimension x="5" y="-70"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
