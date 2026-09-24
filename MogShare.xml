@@ -90,25 +90,37 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="0" y="-30"/>
+							<AbsDimension x="-10" y="-30"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 			</Frame>
 			<Button name="$parent_GameButton" parentKey="GameButton" inherits="UIPanelButtonTemplate">
-				<Size x="76" y="30" />
+				<Size x="80" y="30" />
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parent_SortDropDownMenu">
 						<Offset>
-							<AbsDimension x="170" y="2" />
+							<AbsDimension x="160" y="2" />
 						</Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>self:SetText("Mog War")</OnLoad>
+					<OnLoad>self:SetText(MS.L["Mog War"])</OnLoad>
 					<OnClick>MS.GameButtonOnClick()</OnClick>
 				</Scripts>
 			</Button>
+			<CheckButton name="$parent_ScanAlertOption" inherits="InterfaceOptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parent_GameButton" relativePoint="RIGHT" x="5" y="0" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>self.tooltip = MS.L["Show an alert in chat on a successful mog scan."]</OnLoad>
+					<OnEnter>GameTooltip:SetOwner(self, "ANCHOR_LEFT");GameTooltip:SetText(self.tooltip)</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+					<OnShow>MS.CheckButton_OnShow(self, "showScans", MS.L["Scan Alerts"])</OnShow>
+					<OnClick>MS.CheckButton_OnClick(self, "showScans")</OnClick>
+				</Scripts>
+			</CheckButton>
 			<Frame name="$parent_MogList" parentKey="MogList">
 				<Size x="320" y="420"/>
 				<Anchors>

@@ -38,6 +38,7 @@ function MS.Set_mixin:OnActionButtonClick(button)
 
 		MS_Data[self.link] = nil
 	end
+	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 	MS.UI_ShowList()
 end
 function MS.SelectRow(row)
@@ -52,6 +53,13 @@ function MS.GameButtonOnClick()
 		MS.gameItems = nil  -- clear the gameItems when the game ends
 	end
 	MS.UI_ShowList()
+end
+function MS.CheckButton_OnShow( self, option, text )
+	getglobal(self:GetName().."Text"):SetText(text);
+	self:SetChecked(MS_Options[option]);
+end
+function MS.CheckButton_OnClick( self, option )
+	MS_Options[option] = self:GetChecked()
 end
 --------
 
@@ -124,18 +132,18 @@ function MS.SortDropDownPopulate( self, level, menuList )
 	table.sort( sortList )
 	for _, sf in ipairs( sortList ) do
 		info = UIDropDownMenu_CreateInfo()
-		info.text = sf
+		info.text = MS.sortFunctions[sf].text
+		info.value = sf
 		info.notCheckable = true
 		info.func = MS.SetSortFunction
 		UIDropDownMenu_AddButton( info, level )
 	end
-	UIDropDownMenu_SetText( self, MS_Options.sortBy )
+	UIDropDownMenu_SetText( self, MS.sortFunctions[MS_Options.sortBy].text )
 end
 function MS.SetSortFunction( info )
 	-- takes the info table
-	-- print( "SetSortFunction( "..info.value.." )" )
 	MS_Options.sortBy = info.value
-	UIDropDownMenu_SetText( MogShareDisplayFrame_SortDropDownMenu, info.value )
+	UIDropDownMenu_SetText( MogShareDisplayFrame_SortDropDownMenu, MS.sortFunctions[info.value].text )
 	MS.UI_ShowList()
 end
 
@@ -150,7 +158,6 @@ function MS.UI_BuildItemDisplay()
 			local buttonFrame = CreateFrame("Button", "MS_MogList_Button"..rowNum, MogShareDisplayFrame_MogList, "MSSet_template")
 			buttonFrame.Text:SetText("This is row #:"..rowNum)
 			buttonFrame.Text:Show()
-			buttonFrame.ActionButton:SetText("Archive")
 			if rowNum == 1 then
 				buttonFrame:SetPoint( "TOP", MogShareDisplayFrame_MogList, "TOP" )
 			else
@@ -188,9 +195,9 @@ function MS.UI_ShowList()
 			buttonFrame.Text:Show()
 
 			if MS.gameOn then
-				buttonFrame.ActionButton:SetText("Winner")
+				buttonFrame.ActionButton:SetText(MS.L["Winner"])
 			else
-				buttonFrame.ActionButton:SetText("Archive")
+				buttonFrame.ActionButton:SetText(MS.L["Archive"])
 			end
 
 			if link == MS.selectedLink then
@@ -274,6 +281,7 @@ MS.sortFunctions = {
 		display = function( l ) -- l is the link
 			return date("%c", MS_Data[l].lastScan)
 		end,
+		text = MS.L["Last Scan"],
 	},
 	rank = {
 		sortFun = function( a, b )
@@ -283,10 +291,12 @@ MS.sortFunctions = {
 			return MS_Data[a].lastScan > MS_Data[b].lastScan
 		end,
 		display = function( l )
-			return string.format("%i (%iW - %iL - %iC)",
+			return string.format(MS.L["%d (%dW - %dL - %dC)%s"],
 					MS_Data[l].eloData.rating, MS_Data[l].eloData.wins,
-					MS_Data[l].eloData.losses, MS_Data[l].eloData.comparisons
+					MS_Data[l].eloData.losses, MS_Data[l].eloData.comparisons,
+					(MS_Data[l].eloData.comparisons < MS.provisionalThreshold and " |cffff8080†|r" or "")
 			)
 		end,
+		text = MS.L["Rank"],
 	},
 }

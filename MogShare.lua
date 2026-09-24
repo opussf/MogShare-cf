@@ -31,6 +31,7 @@ function MS.OnLoad()
 end
 function MS.PLAYER_ENTERING_WORLD()
 	MS.Prune()
+	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 end
 function MS.PLAYER_TARGET_CHANGED()
 	-- I still prefer positive checks
@@ -49,10 +50,11 @@ function MS.INSPECT_READY(guid)
 		local mogLink = C_TransmogCollection.GetCustomSetHyperlinkFromItemTransmogInfoList(targetMogList)
 
 		MS.SaveLink( mogLink )
-
-		local name, realm = UnitName("target")
-		realm = realm or GetRealmName()
-		print("Scanned "..name.."-"..realm..": "..mogLink)
+		if MS_Options.showScans then
+			local name, realm = UnitName("target")
+			realm = realm or GetRealmName()
+			MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
+		end
 
 		-- MS.ScanItems()
 
@@ -63,7 +65,9 @@ function MS.CHAT_MSG_( msg, sender )
 	if not issecretvalue(msg) then
 		for mogLink in msg:gmatch(MS.linkPattern) do
 			MS.SaveLink( mogLink )
-			print("Sent by "..sender..": "..mogLink)
+			if MS_Options.showScans then
+				MS.Print(string.format(MS.L["Shared by %s: %s"], sender, mogLink))
+			end
 		end
 	else
 		-- print("chat messages are secret right now.")
@@ -78,6 +82,15 @@ MS.CHAT_MSG_RAID_LEADER  = MS.CHAT_MSG_
 MS.CHAT_MSG_SAY          = MS.CHAT_MSG_
 MS.CHAT_MSG_WHISPER      = MS.CHAT_MSG_
 MS.CHAT_MSG_YELL         = MS.CHAT_MSG_
+
+function MS.Print( msg, showName )
+	-- print to the chat frame
+	-- set showName to false to suppress the addon name printing
+	if (showName == nil) or (showName) then
+		msg = "|cffcfb52b"..MS.MSG_ADDONNAME.."> ".."|r"..msg
+	end
+	DEFAULT_CHAT_FRAME:AddMessage( msg )
+end
 
 function MS.SaveLink( mogLink )
 	if mogLink then
@@ -98,6 +111,7 @@ function MS.SaveLink( mogLink )
 		MS_Data[mogLink] = mogData
 		MS_Archive[mogLink] = nil
 	end
+	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 end
 
 function MS.Prune()
