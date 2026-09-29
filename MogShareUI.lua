@@ -169,7 +169,7 @@ function MS.UI_BuildItemDisplay()
 	end
 end
 function MS.MogMatched( mogStuct )
-	if MS.searchFilter then
+	if MS.searchFilter and MS.searchFilter ~= "" then
 		if mogStuct.classList and string.find( mogStuct.classList[1]:lower(), MS.searchFilter ) then
 			return true
 		end
@@ -329,7 +329,7 @@ MS.sortFunctions = {
 		end,
 		text = MS.L["Rank"],
 	},
-		class = {
+	class = {
 		sortFun = function( a, b )
 			if not MS_Data[a].classList or not MS_Data[b].classList then return false end
 			return MS_Data[a].classList[1] < MS_Data[b].classList[1]
