@@ -168,6 +168,20 @@ function MS.UI_BuildItemDisplay()
 		end
 	end
 end
+function MS.MogMatched( mogStuct )
+	if MS.searchFilter then
+		if mogStuct.classList and string.find( mogStuct.classList[1]:lower(), MS.searchFilter ) then
+			return true
+		end
+		for k in pairs( mogStuct.playerList or {} ) do
+			if string.find( k:lower(), MS.searchFilter ) then
+				return true
+			end
+		end
+	else
+		return true  -- match if searchFiler is nil (no search)
+	end
+end
 
 function MS.UI_ShowList()
 	MS.UI_BuildItemDisplay()
@@ -177,7 +191,11 @@ function MS.UI_ShowList()
 		MS.gameItems = MS.gameItems or MS.PickNextPair()
 		sortedItems = MS.gameItems
 	else
-		for k in pairs( MS_Data ) do table.insert(sortedItems, k) end
+		for k in pairs( MS_Data ) do
+			if MS.MogMatched( MS_Data[k] ) then
+				table.insert(sortedItems, k)
+			end
+		end
 		table.sort( sortedItems, MS.sortFunctions[MS_Options.sortBy].sortFun)
 	end
 	local offset = floor(MogShareDisplayFrame_MogListVSlider:GetValue())
@@ -212,6 +230,18 @@ function MS.UI_ShowList()
 		end
 		count = count + 1
 	end
+end
+function MS.UISearchTextChanged(self, userInput)
+	-- userInput is boolean, if the user set the input.
+	if self:GetText() == "" then
+		self.Instructions:Show()
+		MS.searchFilter = nil
+	else
+		self.Instructions:Hide()
+	end
+
+    MS.searchFilter = self:GetText():lower()
+    MS.UIUpdate()  -- reuse your existing refresh, just have it check MS.searchFilter now
 end
 
 ------
@@ -298,5 +328,15 @@ MS.sortFunctions = {
 			)
 		end,
 		text = MS.L["Rank"],
+	},
+		class = {
+		sortFun = function( a, b )
+			if not MS_Data[a].classList or not MS_Data[b].classList then return false end
+			return MS_Data[a].classList[1] < MS_Data[b].classList[1]
+		end,
+		display = function( l )
+			return string.format( "%s", table.concat( MS_Data[l].classList and MS_Data[l].classList or {}, ", " ) )
+		end,
+		text = MS.L["Class"],
 	},
 }

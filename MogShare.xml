@@ -98,11 +98,7 @@
 			<Button name="$parent_GameButton" parentKey="GameButton" inherits="UIPanelButtonTemplate">
 				<Size x="80" y="30" />
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent_SortDropDownMenu">
-						<Offset>
-							<AbsDimension x="160" y="2" />
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" relativeTo="$parent_SortDropDownMenu" x="160" y="2" />
 				</Anchors>
 				<Scripts>
 					<OnLoad>self:SetText(MS.L["Mog War"])</OnLoad>
@@ -121,14 +117,22 @@
 					<OnClick>MS.CheckButton_OnClick(self, "showScans")</OnClick>
 				</Scripts>
 			</CheckButton>
-			<Frame name="$parent_MogList" parentKey="MogList">
-				<Size x="320" y="420"/>
+			<EditBox name="$parent_SearchBox" parentKey="SearchBox" inherits="SearchBoxTemplate">
+				<Size x="320" y="20"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent">
-						<Offset>
-							<AbsDimension x="5" y="-70"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="TOP" relativeTo="$parent_GameButton" relativePoint="BOTTOM" y="-4"/>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>MS.UISearchTextChanged(self, userInput)</OnTextChanged>
+					<OnEscapePressed>self:ClearFocus(); self:SetText("")</OnEscapePressed>
+				</Scripts>
+			</EditBox>
+			<Frame name="$parent_MogList" parentKey="MogList">
+				<Size x="320" y="394"/>
+				<Anchors>
+					<Anchor point="LEFT" x="5"/>
+					<Anchor point="TOP" relativeTo="$parent_SearchBox" relativePoint="BOTTOM" y="-4"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
@@ -142,7 +146,7 @@
 				</Scripts>
 			</Frame>
 			<Slider name="$parent_MogListVSlider" orientation="VERTICAL" minValue="0" maxValue="100" defaultValue="0" valueStep="1">
-				<Size x="12" y="420"/>
+				<Size x="12" y="394"/>
 				<Anchors>
 					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent_MogList"/>
 				</Anchors>

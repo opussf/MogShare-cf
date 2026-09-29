@@ -2,7 +2,7 @@
 ## Notes: Shares Mogs
 ## Interface: 120100
 ## Author: opussf
-## Version: 1.1
+## Version: 1.2
 ## Description: MogShare Desc
 ## SavedVariables: MS_Data MS_Archive MS_Options
 ## SavedVariablesPerCharacter:

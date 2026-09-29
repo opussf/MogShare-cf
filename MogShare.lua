@@ -20,7 +20,12 @@ function MS.OnLoad()
 	SlashCmdList["MS"] = function(msg) MS.Command(msg); end
 	MogShareFrame:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	MogShareFrame:RegisterEvent( "PLAYER_TARGET_CHANGED" )
+	MogShareFrame:RegisterEvent( "CHAT_MSG_BN_WHISPER" )
+	MogShareFrame:RegisterEvent( "CHAT_MSG_CHANNEL" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_GUILD" )
+	MogShareFrame:RegisterEvent( "CHAT_MSG_INSTANCE_CHAT" )
+	MogShareFrame:RegisterEvent( "CHAT_MSG_INSTANCE_CHAT_LEADER" )
+	MogShareFrame:RegisterEvent( "CHAT_MSG_OFFICER" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_PARTY" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_PARTY_LEADER" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_RAID" )
@@ -28,6 +33,7 @@ function MS.OnLoad()
 	MogShareFrame:RegisterEvent( "CHAT_MSG_SAY" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_WHISPER" )
 	MogShareFrame:RegisterEvent( "CHAT_MSG_YELL" )
+	MogShareFrame:RegisterUnitEvent( "UNIT_MODEL_CHANGED", "target" )
 end
 function MS.PLAYER_ENTERING_WORLD()
 	MS.Prune()
@@ -37,7 +43,6 @@ function MS.PLAYER_TARGET_CHANGED()
 	-- I still prefer positive checks
 	if UnitExists("target") and UnitIsPlayer("target") then
 		if CanInspect("target") and CheckInteractDistance("target",1) then
-			-- print("New target:", UnitName("target"))
 			NotifyInspect("target")
 			MogShareFrame:RegisterEvent("INSPECT_READY")
 			MS.pendingGUID = UnitGUID("target")
@@ -50,9 +55,26 @@ function MS.INSPECT_READY(guid)
 		local mogLink = C_TransmogCollection.GetCustomSetHyperlinkFromItemTransmogInfoList(targetMogList)
 
 		MS.SaveLink( mogLink )
+
+		local name, realm = UnitName("target")
+		realm = realm or GetRealmName()
+		local faction = UnitFactionGroup("target")
+		local guildName = GetGuildInfo("target") or ""
+		MS_Data[mogLink].playerList = MS_Data[mogLink].playerList or {}
+		MS_Data[mogLink].playerList[name.."-"..realm.."-"..faction.."-"..guildName] = time()
+
+		local className, classFile, classID = UnitClass("target")
+		MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
+		MS_Data[mogLink].classList[className] = time()
+		MS_Data[mogLink].classList[1] = nil
+		local sortedClasses = {}
+		for c in pairs(MS_Data[mogLink].classList) do
+			table.insert( sortedClasses, c )
+		end
+		table.sort(sortedClasses)
+		MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
+
 		if MS_Options.showScans then
-			local name, realm = UnitName("target")
-			realm = realm or GetRealmName()
 			MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
 		end
 
@@ -65,6 +87,10 @@ function MS.CHAT_MSG_( msg, sender )
 	if not issecretvalue(msg) then
 		for mogLink in msg:gmatch(MS.linkPattern) do
 			MS.SaveLink( mogLink )
+
+			MS_Data[mogLink].sharedBy = MS_Data[mogLink].sharedBy or {}
+			MS_Data[mogLink].sharedBy[sender] = time()
+
 			if MS_Options.showScans then
 				MS.Print(string.format(MS.L["Shared by %s: %s"], sender, mogLink))
 			end
@@ -74,6 +100,11 @@ function MS.CHAT_MSG_( msg, sender )
 		-- can I save in a queue to scan later?
 	end
 end
+MS.CHAT_MSG_BN_WHISPER   = MS.CHAT_MSG_
+MS.CHAT_MSG_CHANNEL      = MS.CHAT_MSG_
+MS.CHAT_MSG_INSTANCE_CHAT= MS.CHAT_MSG_
+MS.CHAT_MSG_INSTANCE_CHAT_LEADER= MS.CHAT_MSG_
+MS.CHAT_MSG_OFFICER      = MS.CHAT_MSG_
 MS.CHAT_MSG_GUILD        = MS.CHAT_MSG_
 MS.CHAT_MSG_PARTY        = MS.CHAT_MSG_
 MS.CHAT_MSG_PARTY_LEADER = MS.CHAT_MSG_
@@ -82,6 +113,7 @@ MS.CHAT_MSG_RAID_LEADER  = MS.CHAT_MSG_
 MS.CHAT_MSG_SAY          = MS.CHAT_MSG_
 MS.CHAT_MSG_WHISPER      = MS.CHAT_MSG_
 MS.CHAT_MSG_YELL         = MS.CHAT_MSG_
+MS.UNIT_MODEL_CHANGED    = MS.PLAYER_TARGET_CHANGED
 
 function MS.Print( msg, showName )
 	-- print to the chat frame

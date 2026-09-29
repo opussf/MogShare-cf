@@ -10,4 +10,5 @@ if GetLocale() == "frFR" then
 	L.L["Show an alert in chat on a successful mog scan."] = "Afficher une alerte dans le chat lors d'un scan de Mog réussi."
 	L.L["Scan Alerts"] = "Alertes de scan"
 	L.L["%d (%dW - %dL - %dC)%s"] = "%d (%dV - %dD - %dC)%s"
+	L.L["Class"] = "Classe"
 end

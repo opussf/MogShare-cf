@@ -10,4 +10,5 @@ if GetLocale() == "koKR" then
 	L.L["Show an alert in chat on a successful mog scan."] = "형상변환 스캔 성공 시 채팅에 알림을 표시합니다."
 	L.L["Scan Alerts"] = "스캔 알림"
 	L.L["%d (%dW - %dL - %dC)%s"] = "%d (%d승 - %d패 - %d비교)%s"
+	L.L["Class"] = "직업"
 end
