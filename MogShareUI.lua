@@ -176,18 +176,31 @@ function MS.UI_BuildItemDisplay()
 	end
 end
 MS.numericFields = {
-	[MS.L["wins"]]   = function(ms) return ms.eloData.wins end,
-	[MS.L["w"]]      = function(ms) return ms.eloData.wins end,
-	[MS.L["losses"]] = function(ms) return ms.eloData.losses end,
-	[MS.L["l"]]      = function(ms) return ms.eloData.losses end,
-	[MS.L["rating"]] = function(ms) return ms.eloData.rating end,
-	[MS.L["rank"]]   = function(ms) return ms.eloData.rating end,
-	[MS.L["r"]]      = function(ms) return ms.eloData.rating end,
+	["wins"]   = function(ms) return ms.eloData.wins end,
+	["w"]      = function(ms) return ms.eloData.wins end,
+	["losses"] = function(ms) return ms.eloData.losses end,
+	["l"]      = function(ms) return ms.eloData.losses end,
+	["rating"] = function(ms) return ms.eloData.rating end,
+	["rank"]   = function(ms) return ms.eloData.rating end,
+	["r"]      = function(ms) return ms.eloData.rating end,
 }
+MS.localizedFields = {
+	[MS.L["wins"]]   = "wins",
+	[MS.L["w"]]      = "w",
+	[MS.L["losses"]] = "losses",
+	[MS.L["l"]]      = "l",
+	[MS.L["rating"]] = "rating",
+	[MS.L["rank"]]   = "rank",
+	[MS.L["r"]]      = "r",
+}
+
 function MS.ParseNumericFilter(textIn)
 	local field, op, num = textIn:match("^(.+)%s*([<>=]+)%s*(%-?%d+)$")
-	if field and MS.numericFields[field:lower()] then
-		return MS.numericFields[field:lower()], op, tonumber(num)
+
+	local localField = field and MS.localizedFields[field]
+
+	if localField and MS.numericFields[localField] then
+		return MS.numericFields[localField], op, tonumber(num)
 	end
 end
 function MS.MatchesNumbericFilter(mogStruct, dataFun, op, num)
@@ -253,7 +266,7 @@ function MS.UI_ShowList()
 			local lastScan = MS_Data[link].lastScan
 
 			buttonFrame.link = link
-			buttonFrame.Text:SetText(link.." "..MS.sortFunctions[MS_Options.sortBy].display(link))
+			buttonFrame.Text:SetText(count+offset..". "..link.." "..MS.sortFunctions[MS_Options.sortBy].display(link))
 			buttonFrame.Text:Show()
 
 			if MS.gameOn then
