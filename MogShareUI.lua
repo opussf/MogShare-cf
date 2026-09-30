@@ -49,8 +49,13 @@ function MS.GameButtonOnClick()
 	MS.gameOn = not MS.gameOn
 	if MS.gameOn then
 		MogShareDisplayFrame_MogListVSlider:SetValue(0)  -- short list (make sure scroll is at the top)
+		MogShareDisplayFrame_SearchBox:Disable()
+		MogShareDisplayFrame_SearchBox:ClearFocus()
+		MogShareDisplayFrame_SearchBox:SetTextColor(0.5, 0.5, 0.5)
 	else
 		MS.gameItems = nil  -- clear the gameItems when the game ends
+		MogShareDisplayFrame_SearchBox:Enable()
+		MogShareDisplayFrame_SearchBox:SetTextColor(1, 1, 1)
 	end
 	MS.UI_ShowList()
 end
@@ -86,6 +91,8 @@ end
 function MS.UIOpenFrame( mogframe )
 	-- print("MS.UIOpenFrame")
 	mogframe:Show()
+	MogShareDisplayFrame_SearchBox:Enable()
+	MogShareDisplayFrame_SearchBox:SetTextColor(1, 1, 1)
 end
 function MS.UIMoveFrame( mogframe )
 	mogframe:ClearAllPoints()
@@ -168,13 +175,50 @@ function MS.UI_BuildItemDisplay()
 		end
 	end
 end
-function MS.MogMatched( mogStuct )
+MS.numericFields = {
+	[MS.L["wins"]]   = function(ms) return ms.eloData.wins end,
+	[MS.L["w"]]      = function(ms) return ms.eloData.wins end,
+	[MS.L["losses"]] = function(ms) return ms.eloData.losses end,
+	[MS.L["l"]]      = function(ms) return ms.eloData.losses end,
+	[MS.L["rating"]] = function(ms) return ms.eloData.rating end,
+	[MS.L["rank"]]   = function(ms) return ms.eloData.rating end,
+	[MS.L["r"]]      = function(ms) return ms.eloData.rating end,
+}
+function MS.ParseNumericFilter(textIn)
+	local field, op, num = textIn:match("^(.+)%s*([<>=]+)%s*(%-?%d+)$")
+	if field and MS.numericFields[field:lower()] then
+		return MS.numericFields[field:lower()], op, tonumber(num)
+	end
+end
+function MS.MatchesNumbericFilter(mogStruct, dataFun, op, num)
+	local value = dataFun(mogStruct)
+	if value then
+		if     op == ">"  then return value >  num
+		elseif op == "<"  then return value <  num
+		elseif op == ">=" then return value >= num
+		elseif op == "<=" then return value <= num
+		elseif op == "="  then return value == num
+		end
+	end
+end
+function MS.MogMatched( mogStruct )
 	if MS.searchFilter and MS.searchFilter ~= "" then
-		if mogStuct.classList and string.find( mogStuct.classList[1]:lower(), MS.searchFilter ) then
+
+		local dataFun, op, num = MS.ParseNumericFilter(MS.searchFilter)
+		if dataFun then
+			return MS.MatchesNumbericFilter(mogStruct, dataFun, op, num)
+		end
+
+		if mogStruct.classList and string.find( mogStruct.classList[1]:lower(), MS.searchFilter ) then
 			return true
 		end
-		for k in pairs( mogStuct.playerList or {} ) do
+		for k in pairs( mogStruct.playerList or {} ) do
 			if string.find( k:lower(), MS.searchFilter ) then
+				return true
+			end
+		end
+		for i in pairs( mogStruct.itemNames or {} ) do
+			if string.find( i:lower(), MS.searchFilter ) then
 				return true
 			end
 		end

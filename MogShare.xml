@@ -129,7 +129,7 @@
 				</Scripts>
 			</EditBox>
 			<Frame name="$parent_MogList" parentKey="MogList">
-				<Size x="320" y="394"/>
+				<Size x="320" y="405"/>
 				<Anchors>
 					<Anchor point="LEFT" x="5"/>
 					<Anchor point="TOP" relativeTo="$parent_SearchBox" relativePoint="BOTTOM" y="-4"/>
@@ -146,7 +146,7 @@
 				</Scripts>
 			</Frame>
 			<Slider name="$parent_MogListVSlider" orientation="VERTICAL" minValue="0" maxValue="100" defaultValue="0" valueStep="1">
-				<Size x="12" y="394"/>
+				<Size x="12" y="405"/>
 				<Anchors>
 					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent_MogList"/>
 				</Anchors>

@@ -1,11 +1,22 @@
 ## Title: MogShare
-## Notes: Shares Mogs
 ## Interface: 120100
 ## Author: opussf
-## Version: 1.2.1
+## Version: 1.3
 ## Description: MogShare Desc
 ## SavedVariables: MS_Data MS_Archive MS_Options
 ## SavedVariablesPerCharacter:
+
+## Notes: Shares Mogs
+## Notes-deDE: Teilt Moggs
+## Notes-esES: Comparte transfiguraciones
+## Notes-esMX: Comparte transfiguraciones
+## Notes-frFR: Partage des apparences
+## Notes-itIT: Condivide le trasmogrificazioni
+## Notes-koKR: 형상변환을 공유합니다
+## Notes-ptBR: Compartilha transmogs
+## Notes-ruRU: Делится обликами
+## Notes-zhCN: 分享幻化
+## Notes-zhTW: 分享塑形
 
 ## Category-enUS: Collections
 ## Category-deDE: Kriegsmeutesammlungen

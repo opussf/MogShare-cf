@@ -37,6 +37,7 @@ function MS.OnLoad()
 end
 function MS.PLAYER_ENTERING_WORLD()
 	MS.Prune()
+	MS.MakeMissingItemLists()
 	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 end
 function MS.PLAYER_TARGET_CHANGED()
@@ -123,7 +124,6 @@ function MS.Print( msg, showName )
 	end
 	DEFAULT_CHAT_FRAME:AddMessage( msg )
 end
-
 function MS.SaveLink( mogLink )
 	if mogLink then
 		local mogData = MS_Data[mogLink] or (MS_Archive[mogLink] or {})
@@ -142,10 +142,12 @@ function MS.SaveLink( mogLink )
 
 		MS_Data[mogLink] = mogData
 		MS_Archive[mogLink] = nil
+		if not MS_Data[mogLink].itemList then
+			MS.ScanItems(mogLink)
+		end
 	end
 	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 end
-
 function MS.Prune()
 	local ts = time()
 	local prune_age = 30 * 86400
@@ -155,30 +157,64 @@ function MS.Prune()
 		end
 	end
 end
-
-function MS.ScanItems()
-	for _, token in ipairs(MS.slotTokens) do
-			local slotID = GetInventorySlotInfo(token)
-
-			local slotAppearanceID = targetMogList[slotID].appearanceID
-			local slotIllusionID = targetMogList[slotID].illusionID
-
-			MS_Data[guid][MS.slotNames[slotID].."_appearanceID"] = slotAppearanceID
-			MS_Data[guid][MS.slotNames[slotID].."_illusionID"] = slotIllusionID
-
-			local sourceItemInfo = C_TransmogCollection.GetSourceInfo(slotAppearanceID)
-			if sourceItemInfo then
-				local sourceItemID = sourceItemInfo.itemID
-				MS_Data[guid][MS.slotNames[slotID].."_sourceItemID"] = sourceItemID
-
-				local item = Item:CreateFromItemID(sourceItemID)
-				item:ContinueOnItemLoad(function()
-					local itemName, itemLink = C_Item.GetItemInfo( sourceItemID )
-					MS_Data[guid][MS.slotNames[slotID].."_sourceItemName"] = itemName
-					-- print(token, slotID or "nil", MS.slotNames[slotID], itemLink)
-				end)
+function MS.ScanItems( mogLink )
+	local list = C_TransmogCollection.GetItemTransmogInfoListFromCustomSetHyperlink( mogLink )
+	if list then
+		MS_Data[mogLink].itemNames = {}
+		for slot, itemInfo in pairs( list ) do
+			local sourceInfo = C_TransmogCollection.GetAppearanceSourceInfo( itemInfo.appearanceID )
+			if sourceInfo and sourceInfo.itemLink then
+				local itemName = GetItemInfo(sourceInfo.itemLink)
+				if itemName then
+					MS_Data[mogLink].itemNames[itemName] = true
+				else
+					local item = Item:CreateFromItemLink( sourceInfo.itemLink )
+					item:ContinueOnItemLoad(function()
+						local itemName = GetItemInfo(sourceInfo.itemLink)
+						MS_Data[mogLink].itemNames[itemName] = true
+					end)
+				end
 			end
 		end
+	end
+end
+function MS.MakeMissingStep()
+	if MS.scanCO then
+		local ok, err = coroutine.resume(MS.scanCO)
+		if ok then
+			if coroutine.status(MS.scanCO) == "dead" then
+				local elapsed = time() - MS.scanStart
+				MS.Print(string.format(MS.L["Item scan is complete after %s."], SecondsToTime(elapsed)))
+				MS.scanStart = nil
+				MS.scanCO = nil
+				return
+			else
+				C_Timer.After(0.5, MS.MakeMissingStep)  -- schedule next step
+			end
+		else
+			MS.Print(string.format(MS.L["There was an error (%s)"], err))
+			MS.scanCO = nil
+		end
+	end
+end
+function MS.MakeMissingItemLists()
+	if MS.scanCO and coroutine.status(MS.scanCO) ~= "dead" then
+		return  -- already running
+	end
+
+	MS.Print(MS.L["Starting Item scan."])
+	MS.scanStart = time()
+
+	MS.scanCO = coroutine.create(function()
+		for mogLink, data in pairs(MS_Data) do
+			if not data.itemNames then
+				MS.ScanItems( mogLink )
+				coroutine.yield()
+			end
+		end
+	end)
+
+	MS.MakeMissingStep()
 end
 function MS.Command(msg)
 	MogShareDisplayFrame:Show()
