@@ -41,6 +41,52 @@ function MS.Set_mixin:OnActionButtonClick(button)
 	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 	MS.UI_ShowList()
 end
+function MS.Set_mixin:OnEnter()
+	if self.link then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:ClearLines()
+
+		GameTooltip:AddLine(
+				string.format("%s: %s", MS.L["Last Scan"], date("%X %x", MS_Data[self.link].lastScan)),
+				1, 1, 1)
+		GameTooltip:AddLine(" ")
+
+		GameTooltip:AddLine(
+				string.format(MS.L["%d (%dW - %dL - %dC)%s"],
+					MS_Data[self.link].eloData.rating, MS_Data[self.link].eloData.wins,
+					MS_Data[self.link].eloData.losses, MS_Data[self.link].eloData.comparisons, ""),
+				0.6, 0.6, 0.6)
+		if MS_Data[self.link].classList or MS_Data[self.link].playerList then
+			GameTooltip:AddLine(" ")
+		end
+		if MS_Data[self.link].classList and MS_Data[self.link].classList[1] then
+			GameTooltip:AddLine(
+					string.format("%s: %s", MS.L["Class"],
+					MS_Data[self.link].classList[1]))
+		end
+		if MS_Data[self.link].playerList then
+			local players = {}
+			for pName, ts in pairs( MS_Data[self.link].playerList ) do
+				table.insert( players, {ts=ts, pName=pName} )
+			end
+			table.sort( players, function(a, b) return a.ts > b.ts end )
+			for i, player in ipairs( players ) do
+				if i > 20 then break end
+				local name, realm = player.pName:match("^(.-)-(.-)-")
+				if name and realm then
+					GameTooltip:AddDoubleLine(
+							name.."-"..realm, date("%x", player.ts))
+				end
+			end
+		end
+
+		GameTooltip:Show()
+	end
+end
+function MS.Set_mixin:OnLeave()
+	GameTooltip:Hide()
+end
+---------
 function MS.SelectRow(row)
 	MS.selectedLink = row.link
 	MS.UI_ShowList()  -- force update
@@ -225,6 +271,9 @@ function MS.MogMatched( mogStruct )
 		if mogStruct.classList and string.find( mogStruct.classList[1]:lower(), MS.searchFilter ) then
 			return true
 		end
+		if string.find( date("%B", mogStruct.lastScan):lower(), MS.searchFilter ) then
+			return true
+		end
 		for k in pairs( mogStruct.playerList or {} ) do
 			if string.find( k:lower(), MS.searchFilter ) then
 				return true
@@ -366,7 +415,20 @@ MS.sortFunctions = {
 			return MS_Data[a].lastScan > MS_Data[b].lastScan
 		end,
 		display = function( l ) -- l is the link
-			return date("%c", MS_Data[l].lastScan)
+			-- since there is no OnUpdate, showing SecondsToTime does not make sense.
+			local now = date("*t")
+			local mogTime = date("*t", MS_Data[l].lastScan)
+			local diff = time() - MS_Data[l].lastScan
+
+			if now.year == mogTime.year
+					and now.month == mogTime.month
+					and now.day == mogTime.day then
+				return date("%X", MS_Data[l].lastScan)
+			elseif diff < 604800 then
+				return date("%a, %X", MS_Data[l].lastScan)
+			else
+				return date("%x %X", MS_Data[l].lastScan)
+			end
 		end,
 		text = MS.L["Last Scan"],
 	},

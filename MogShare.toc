@@ -1,10 +1,11 @@
 ## Title: MogShare
 ## Interface: 120100
 ## Author: opussf
-## Version: 1.3.1
+## Version: 1.4
 ## Description: MogShare Desc
 ## SavedVariables: MS_Data MS_Archive MS_Options
 ## SavedVariablesPerCharacter:
+## X-Curse-Project-ID: 1706879
 
 ## Notes: Shares Mogs
 ## Notes-deDE: Teilt Moggs

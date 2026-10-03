@@ -8,7 +8,7 @@ if GetLocale() == "deDE" then
 	L.L["Shared by %s: %s"] = "Geteilt von %s: %s"
 	L.L["Scanned %s-%s: %s"] = "Gescannt %s-%s: %s"
 	L.L["Show an alert in chat on a successful mog scan."] = "Eine Benachrichtigung im Chat bei einem erfolgreichen Mog-Scan anzeigen."
-	L.L["Scan Alerts"] = "Scan-Benachrichtigungen"
+	L.L["Scan Alerts"] = "Warnungen"
 	L.L["%d (%dW - %dL - %dC)%s"] = "%d (%dS - %dN - %dV)%s"
 	L.L["Class"] = "Klasse"
 	L.L["wins"] = "siege"

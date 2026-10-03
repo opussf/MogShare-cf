@@ -36,6 +36,8 @@
 		</Frames>
 		<Scripts>
 			<OnClick method="OnRowClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
 		</Scripts>
 	</Button>
 
