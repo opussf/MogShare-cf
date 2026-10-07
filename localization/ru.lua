@@ -21,4 +21,9 @@ if GetLocale() == "ruRU" then
 	L.L["Item scan is complete after %s."] = "Сканирование предметов завершено за %s."
 	L.L["There was an error (%s)"] = "Произошла ошибка (%s)"
 	L.L["Starting Item scan."] = "Начинается сканирование предметов."
+	L.L["Edit Name"] = "Изменить название"
+	L.L["Add Name"] = "Добавить название"
+	L.L["Reset Rank"] = "Сбросить ранг"
+	L.L["Name this set:"] = "Назовите этот набор:"
+	L.L["Name"] = "Название"
 end

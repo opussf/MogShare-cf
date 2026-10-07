@@ -21,4 +21,9 @@ if GetLocale() == "frFR" then
 	L.L["Item scan is complete after %s."] = "L’analyse des objets est terminée après %s."
 	L.L["There was an error (%s)"] = "Une erreur s’est produite (%s)"
 	L.L["Starting Item scan."] = "Démarrage de l’analyse des objets."
+	L.L["Edit Name"] = "Modifier le nom"
+	L.L["Add Name"] = "Ajouter un nom"
+	L.L["Reset Rank"] = "Réinitialiser le rang"
+	L.L["Name this set:"] = "Nommer cet ensemble :"
+	L.L["Name"] = "Nom"
 end

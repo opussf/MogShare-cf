@@ -21,4 +21,9 @@ if GetLocale() == "itIT" then
 	L.L["Item scan is complete after %s."] = "La scansione degli oggetti è completata dopo %s."
 	L.L["There was an error (%s)"] = "Si è verificato un errore (%s)"
 	L.L["Starting Item scan."] = "Avvio della scansione degli oggetti."
+	L.L["Edit Name"] = "Modifica nome"
+	L.L["Add Name"] = "Aggiungi nome"
+	L.L["Reset Rank"] = "Reimposta grado"
+	L.L["Name this set:"] = "Assegna un nome a questo set:"
+	L.L["Name"] = "Nome"
 end

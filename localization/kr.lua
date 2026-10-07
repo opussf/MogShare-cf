@@ -21,4 +21,9 @@ if GetLocale() == "koKR" then
 	L.L["Item scan is complete after %s."] = "%s 후 아이템 검색이 완료되었습니다."
 	L.L["There was an error (%s)"] = "오류가 발생했습니다 (%s)"
 	L.L["Starting Item scan."] = "아이템 검색을 시작합니다."
+	L.L["Edit Name"] = "이름 편집"
+	L.L["Add Name"] = "이름 추가"
+	L.L["Reset Rank"] = "순위 초기화"
+	L.L["Name this set:"] = "세트 이름:"
+	L.L["Name"] = "이름"
 end

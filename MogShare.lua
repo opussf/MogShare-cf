@@ -61,25 +61,29 @@ function MS.INSPECT_READY(guid)
 		realm = realm or GetRealmName()
 		local faction = UnitFactionGroup("target")
 		local guildName = GetGuildInfo("target") or ""
-		MS_Data[mogLink].playerList = MS_Data[mogLink].playerList or {}
-		MS_Data[mogLink].playerList[name.."-"..realm.."-"..faction.."-"..guildName] = time()
+		if name and realm and faction then
+			MS_Data[mogLink].playerList = MS_Data[mogLink].playerList or {}
+			local nameKey = name.."-"..realm.."-"..faction.."-"..guildName
+			if not issecretvalue(nameKey) then
+				MS_Data[mogLink].playerList[nameKey] = time()
+			end
 
-		local className, classFile, classID = UnitClass("target")
-		MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
-		MS_Data[mogLink].classList[className] = time()
-		MS_Data[mogLink].classList[1] = nil
-		local sortedClasses = {}
-		for c in pairs(MS_Data[mogLink].classList) do
-			table.insert( sortedClasses, c )
+			local className, classFile, classID = UnitClass("target")
+			MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
+			MS_Data[mogLink].classList[className] = time()
+			MS_Data[mogLink].classList[1] = nil
+			local sortedClasses = {}
+			for c in pairs(MS_Data[mogLink].classList) do
+				table.insert( sortedClasses, c )
+			end
+			table.sort(sortedClasses)
+			MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
+
+			if MS_Options.showScans then
+				MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
+			end
+			-- MS.ScanItems()
 		end
-		table.sort(sortedClasses)
-		MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
-
-		if MS_Options.showScans then
-			MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
-		end
-
-		-- MS.ScanItems()
 
 		MogShareFrame:UnregisterEvent("INSPECT_READY")
 	end

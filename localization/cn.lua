@@ -21,4 +21,9 @@ if GetLocale() == "zhCN" then
 	L.L["Item scan is complete after %s."] = "物品扫描在 %s 后完成。"
 	L.L["There was an error (%s)"] = "发生错误（%s）"
 	L.L["Starting Item scan."] = "开始扫描物品。"
+	L.L["Edit Name"] = "编辑名称"
+	L.L["Add Name"] = "添加名称"
+	L.L["Reset Rank"] = "重置排名"
+	L.L["Name this set:"] = "为此套装命名："
+	L.L["Name"] = "名称"
 end

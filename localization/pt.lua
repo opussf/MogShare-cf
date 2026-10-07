@@ -21,4 +21,9 @@ if GetLocale() == "ptBR" then
 	L.L["Item scan is complete after %s."] = "A verificação de itens foi concluída após %s."
 	L.L["There was an error (%s)"] = "Ocorreu um erro (%s)"
 	L.L["Starting Item scan."] = "Iniciando a verificação de itens."
+	L.L["Edit Name"] = "Editar nome"
+	L.L["Add Name"] = "Adicionar nome"
+	L.L["Reset Rank"] = "Redefinir patente"
+	L.L["Name this set:"] = "Dê um nome a este conjunto:"
+	L.L["Name"] = "Nome"
 end

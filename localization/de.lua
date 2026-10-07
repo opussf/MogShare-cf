@@ -21,4 +21,9 @@ if GetLocale() == "deDE" then
 	L.L["Item scan is complete after %s."] = "Der Gegenstandsscan ist nach %s abgeschlossen."
 	L.L["There was an error (%s)"] = "Es ist ein Fehler aufgetreten (%s)"
 	L.L["Starting Item scan."] = "Gegenstandsscan wird gestartet."
+	L.L["Edit Name"] = "Namen bearbeiten"
+	L.L["Add Name"] = "Namen hinzufügen"
+	L.L["Reset Rank"] = "Rang zurücksetzen"
+	L.L["Name this set:"] = "Name dieses Sets:"
+	L.L["Name"] = "Name"
 end

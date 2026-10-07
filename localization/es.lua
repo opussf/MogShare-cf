@@ -21,4 +21,9 @@ if GetLocale() == "esES" or GetLocale() == "esMX" then
 	L.L["Item scan is complete after %s."] = "El escaneo de objetos se ha completado tras %s."
 	L.L["There was an error (%s)"] = "Se ha producido un error (%s)"
 	L.L["Starting Item scan."] = "Iniciando el escaneo de objetos."
+	L.L["Edit Name"] = "Editar nombre"
+	L.L["Add Name"] = "Añadir nombre"
+	L.L["Reset Rank"] = "Restablecer rango"
+	L.L["Name this set:"] = "Nombra este conjunto:"
+	L.L["Name"] = "Nombre"
 end
