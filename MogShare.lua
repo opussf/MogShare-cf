@@ -67,8 +67,10 @@ function MS.INSPECT_READY(guid)
 			if not issecretvalue(nameKey) then
 				MS_Data[mogLink].playerList[nameKey] = time()
 			end
+		end
 
-			local className, classFile, classID = UnitClass("target")
+		local className, classFile, classID = UnitClass("target")
+		if className and not issecretvalue(className) then
 			MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
 			MS_Data[mogLink].classList[className] = time()
 			MS_Data[mogLink].classList[1] = nil
@@ -78,12 +80,12 @@ function MS.INSPECT_READY(guid)
 			end
 			table.sort(sortedClasses)
 			MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
-
-			if MS_Options.showScans then
-				MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
-			end
-			-- MS.ScanItems()
 		end
+
+		if MS_Options.showScans then
+			MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
+		end
+		-- MS.ScanItems()
 
 		MogShareFrame:UnregisterEvent("INSPECT_READY")
 	end
