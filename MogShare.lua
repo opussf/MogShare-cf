@@ -54,37 +54,39 @@ function MS.INSPECT_READY(guid)
 		local targetMogList = C_TransmogCollection.GetInspectItemTransmogInfoList()
 		local mogLink = C_TransmogCollection.GetCustomSetHyperlinkFromItemTransmogInfoList(targetMogList)
 
-		MS.SaveLink( mogLink )
+		if mogLink then
+			MS.SaveLink( mogLink )
 
-		local name, realm = UnitName("target")
-		realm = realm or GetRealmName()
-		local faction = UnitFactionGroup("target")
-		local guildName = GetGuildInfo("target") or ""
-		if name and realm and faction then
-			MS_Data[mogLink].playerList = MS_Data[mogLink].playerList or {}
-			local nameKey = name.."-"..realm.."-"..faction.."-"..guildName
-			if not issecretvalue(nameKey) then
-				MS_Data[mogLink].playerList[nameKey] = time()
+			local name, realm = UnitName("target")
+			realm = realm or GetRealmName()
+			local faction = UnitFactionGroup("target")
+			local guildName = GetGuildInfo("target") or ""
+			if name and realm and faction then
+				MS_Data[mogLink].playerList = MS_Data[mogLink].playerList or {}
+				local nameKey = name.."-"..realm.."-"..faction.."-"..guildName
+				if not issecretvalue(nameKey) then
+					MS_Data[mogLink].playerList[nameKey] = time()
+				end
 			end
-		end
 
-		local className, classFile, classID = UnitClass("target")
-		if className and not issecretvalue(className) then
-			MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
-			MS_Data[mogLink].classList[className] = time()
-			MS_Data[mogLink].classList[1] = nil
-			local sortedClasses = {}
-			for c in pairs(MS_Data[mogLink].classList) do
-				table.insert( sortedClasses, c )
+			local className, classFile, classID = UnitClass("target")
+			if className and not issecretvalue(className) then
+				MS_Data[mogLink].classList = MS_Data[mogLink].classList or {}
+				MS_Data[mogLink].classList[className] = time()
+				MS_Data[mogLink].classList[1] = nil
+				local sortedClasses = {}
+				for c in pairs(MS_Data[mogLink].classList) do
+					table.insert( sortedClasses, c )
+				end
+				table.sort(sortedClasses)
+				MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
 			end
-			table.sort(sortedClasses)
-			MS_Data[mogLink].classList[1] = table.concat( sortedClasses, ", " )
-		end
 
-		if MS_Options.showScans then
-			MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
+			if MS_Options.showScans then
+				MS.Print(string.format(MS.L["Scanned %s-%s: %s"], name, realm, mogLink))
+			end
+			-- MS.ScanItems()
 		end
-		-- MS.ScanItems()
 
 		MogShareFrame:UnregisterEvent("INSPECT_READY")
 	end
