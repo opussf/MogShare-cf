@@ -357,8 +357,8 @@ function MS.UI_ShowList()
 		sortedItems = MS.gameItems
 	else
 		for k in pairs( MS_Data ) do
-			if (MS.showArchived and MS_Data[k].archived)
-					or (not MS.showArchived and not MS_Data[k].archived) then
+			if ((MS.showArchived and MS_Data[k].archived) or (not MS.showArchived and not MS_Data[k].archived))
+					and MS.MogMatched( MS_Data[k] ) then
 				table.insert(sortedItems, k)
 			end
 		end
