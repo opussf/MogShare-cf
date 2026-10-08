@@ -26,4 +26,5 @@ if GetLocale() == "zhTW" then
 	L.L["Reset Rank"] = "重置排名"
 	L.L["Name this set:"] = "為此套裝命名："
 	L.L["Name"] = "名稱"
+	L.L["Restore"] = "還原"
 end

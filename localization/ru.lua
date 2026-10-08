@@ -26,4 +26,5 @@ if GetLocale() == "ruRU" then
 	L.L["Reset Rank"] = "Сбросить ранг"
 	L.L["Name this set:"] = "Назовите этот набор:"
 	L.L["Name"] = "Название"
+	L.L["Restore"] = "Восстановить"
 end

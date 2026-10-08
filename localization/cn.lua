@@ -26,4 +26,5 @@ if GetLocale() == "zhCN" then
 	L.L["Reset Rank"] = "重置排名"
 	L.L["Name this set:"] = "为此套装命名："
 	L.L["Name"] = "名称"
+	L.L["Restore"] = "恢复"
 end

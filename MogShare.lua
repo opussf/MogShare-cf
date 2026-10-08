@@ -4,7 +4,6 @@ MS.MSG_VERSION   = C_AddOns.GetAddOnMetadata( MS_SLUG, "Version" )
 MS.MSG_AUTHOR    = C_AddOns.GetAddOnMetadata( MS_SLUG, "Author" )
 
 MS_Data = {}
-MS_Archive = {}
 MS_Options = { sortBy = "lastScan" }
 
 MS.linkPattern = "(|c.-|Hcustomset:.-|r)"
@@ -132,7 +131,7 @@ function MS.Print( msg, showName )
 end
 function MS.SaveLink( mogLink )
 	if mogLink then
-		local mogData = MS_Data[mogLink] or (MS_Archive[mogLink] or {})
+		local mogData = MS_Data[mogLink] or {}
 		mogData.archived = nil
 		local ts = time()
 
@@ -147,7 +146,6 @@ function MS.SaveLink( mogLink )
 		}
 
 		MS_Data[mogLink] = mogData
-		MS_Archive[mogLink] = nil
 		if not MS_Data[mogLink].itemList then
 			MS.ScanItems(mogLink)
 		end
@@ -157,9 +155,16 @@ end
 function MS.Prune()
 	local ts = time()
 	local prune_age = 30 * 86400
-	for mogLink, data in pairs( MS_Archive ) do
-		if not data.archived or (data.archived + prune_age < ts) then
-			MS_Archive[mogLink] = nil
+
+	for mogLink, data in pairs( MS_Archive or {} ) do
+		if not MS_Data[mogLink] then
+			MS_Data[mogLink] = MS_Archive[mogLink]
+		end
+		MS_Archive[mogLink] = nil
+	end
+	for mogLink, data in pairs( MS_Data ) do
+		if data.archived and ( data.archived + prune_age < ts ) then
+			MS_Data[mogLink] = nil
 		end
 	end
 end

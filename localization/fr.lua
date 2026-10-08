@@ -26,4 +26,5 @@ if GetLocale() == "frFR" then
 	L.L["Reset Rank"] = "Réinitialiser le rang"
 	L.L["Name this set:"] = "Nommer cet ensemble :"
 	L.L["Name"] = "Nom"
+	L.L["Restore"] = "Restaurer"
 end

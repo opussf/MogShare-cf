@@ -26,4 +26,5 @@ if GetLocale() == "itIT" then
 	L.L["Reset Rank"] = "Reimposta grado"
 	L.L["Name this set:"] = "Assegna un nome a questo set:"
 	L.L["Name"] = "Nome"
+	L.L["Restore"] = "Ripristina"
 end

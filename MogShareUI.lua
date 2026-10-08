@@ -70,8 +70,6 @@ function MS.Set_mixin:OnRowClick(button)
 		end
 	end
 	MS.SelectRow(self)
-	-- print("Row clicked:", self.Text:GetText())
-	-- self is the row button itself, so self.Text / self.ActionButton work here too
 end
 function MS.Set_mixin:OnActionButtonClick(button)
 	if MS.gameOn then
@@ -80,12 +78,10 @@ function MS.Set_mixin:OnActionButtonClick(button)
 				(self.link == MS.gameItems[2] and MS.gameItems[1] or MS.gameItems[2])    -- loser
 		)
 		MS.gameItems = nil
-	else
-		print("Archiving: "..self.link)
-		MS_Archive[self.link] = MS_Data[self.link]
-		MS_Archive[self.link].archived = time()
-
-		MS_Data[self.link] = nil
+	elseif MS.showArchived then  -- restoring
+		MS_Data[self.link].archived = nil
+	else  -- Archiving
+		MS_Data[self.link].archived = time()
 	end
 	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 	MS.UI_ShowList()
@@ -233,13 +229,25 @@ function MS.SortDropDownPopulate( self, level, menuList )
 	end
 	table.sort( sortList )
 	for _, sf in ipairs( sortList ) do
-		info = UIDropDownMenu_CreateInfo()
+		local info = UIDropDownMenu_CreateInfo()
 		info.text = MS.sortFunctions[sf].text
 		info.value = sf
 		info.notCheckable = true
 		info.func = MS.SetSortFunction
 		UIDropDownMenu_AddButton( info, level )
 	end
+	local info = UIDropDownMenu_CreateInfo()
+	info.text = MS.L["Show Archived"]
+	info.isNotRadio = true
+	info.checked = MS.showArchived
+	info.keepShownOnClick = true   -- menu stays open after toggling
+	info.func = function()
+		MS.showArchived = not MS.showArchived
+		MogShareDisplayFrame_MogListVSlider:SetValue(0)
+		MS.UI_ShowList()
+	end
+	UIDropDownMenu_AddButton( info, level )
+
 	UIDropDownMenu_SetText( self, MS.sortFunctions[MS_Options.sortBy].text )
 end
 function MS.SetSortFunction( info )
@@ -349,11 +357,12 @@ function MS.UI_ShowList()
 		sortedItems = MS.gameItems
 	else
 		for k in pairs( MS_Data ) do
-			if MS.MogMatched( MS_Data[k] ) then
+			if (MS.showArchived and MS_Data[k].archived)
+					or (not MS.showArchived and not MS_Data[k].archived) then
 				table.insert(sortedItems, k)
 			end
 		end
-		table.sort( sortedItems, MS.sortFunctions[MS_Options.sortBy].sortFun)
+		table.sort( sortedItems, MS.sortFunctions[MS_Options.sortBy].sortFun )
 	end
 	local offset = floor(MogShareDisplayFrame_MogListVSlider:GetValue())
 	MogShareDisplayFrame_MogListVSlider:SetMinMaxValues(0, max(0, #sortedItems - #MS.UISet_Buttons))
@@ -371,6 +380,8 @@ function MS.UI_ShowList()
 
 			if MS.gameOn then
 				buttonFrame.ActionButton:SetText(MS.L["Winner"])
+			elseif MS.showArchived then
+				buttonFrame.ActionButton:SetText(MS.L["Restore"])
 			else
 				buttonFrame.ActionButton:SetText(MS.L["Archive"])
 			end
@@ -406,7 +417,11 @@ end
 ------
 function MS.PickNextPair()
 	local items = {}
-	for item in pairs(MS_Data) do table.insert(items, item) end
+	for item in pairs(MS_Data) do
+		if not MS_Data[item].archived then
+			table.insert(items, item)
+		end
+	end
 
 	-- bias toward under-compared items
 	table.sort(items, function(a, b)

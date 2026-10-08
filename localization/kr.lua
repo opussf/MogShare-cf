@@ -26,4 +26,5 @@ if GetLocale() == "koKR" then
 	L.L["Reset Rank"] = "순위 초기화"
 	L.L["Name this set:"] = "세트 이름:"
 	L.L["Name"] = "이름"
+	L.L["Restore"] = "복원"
 end

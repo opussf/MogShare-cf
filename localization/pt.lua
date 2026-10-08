@@ -26,4 +26,5 @@ if GetLocale() == "ptBR" then
 	L.L["Reset Rank"] = "Redefinir patente"
 	L.L["Name this set:"] = "Dê um nome a este conjunto:"
 	L.L["Name"] = "Nome"
+	L.L["Restore"] = "Restaurar"
 end

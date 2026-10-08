@@ -26,4 +26,5 @@ if GetLocale() == "deDE" then
 	L.L["Reset Rank"] = "Rang zurücksetzen"
 	L.L["Name this set:"] = "Name dieses Sets:"
 	L.L["Name"] = "Name"
+	L.L["Restore"] = "Wiederherstellen"
 end
