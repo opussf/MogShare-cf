@@ -52,7 +52,6 @@ MS.Set_mixin = {}
 function MS.Set_mixin:OnRowClick(button)
 	if button == "RightButton" then
 		MenuUtil.CreateContextMenu(self, MS.UI_ContextMenuCallBack)
-
 		return
 	end
 	if self.link then
