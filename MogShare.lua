@@ -177,13 +177,13 @@ function MS.ScanItems( mogLink )
 		for slot, itemInfo in pairs( list ) do
 			local sourceInfo = C_TransmogCollection.GetAppearanceSourceInfo( itemInfo.appearanceID )
 			if sourceInfo and sourceInfo.itemLink then
-				local itemName = GetItemInfo(sourceInfo.itemLink)
+				local itemName = C_Item.GetItemInfo(sourceInfo.itemLink)
 				if itemName then
 					MS_Data[mogLink].itemNames[itemName] = true
 				else
 					local item = Item:CreateFromItemLink( sourceInfo.itemLink )
 					item:ContinueOnItemLoad(function()
-						local itemName = GetItemInfo(sourceInfo.itemLink)
+						local itemName = C_Item.GetItemInfo(sourceInfo.itemLink)
 						MS_Data[mogLink].itemNames[itemName] = true
 					end)
 				end
