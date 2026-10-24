@@ -123,6 +123,23 @@ function MS.Set_mixin:OnEnter()
 				end
 			end
 		end
+		if MS_Data[self.link].sharedBy then
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddLine(MS.L["Shared by:"])
+			local players = {}
+			for pName, ts in pairs( MS_Data[self.link].sharedBy ) do
+				table.insert( players, {ts=ts, pName=pName} )
+			end
+			table.sort( players, function(a, b) return a.ts > b.ts end )
+			for i, player in ipairs( players ) do
+				if i > 20 then break end
+				local name, realm = player.pName:match("^(.-)-(.-)$")
+				if name and realm then
+					GameTooltip:AddDoubleLine(
+							name.."-"..realm, date("%x", player.ts))
+				end
+			end
+		end
 
 		GameTooltip:Show()
 	end
@@ -208,7 +225,10 @@ function MS.UIOnShow()
 	MS.UI_BuildItemDisplay()
 	MS.UI_ShowList()
 end
-function MS.UIOnHide()
+function MS.UIOnHide( mogframe )
+	mogframe:ClearAllPoints()
+	mogframe:SetPoint("CENTER", UIParent, "CENTER")
+
 	MS.gameOn = nil
 	MS.gameItems = nil
 end

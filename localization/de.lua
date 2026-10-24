@@ -27,4 +27,5 @@ if GetLocale() == "deDE" then
 	L.L["Name this set:"] = "Name dieses Sets:"
 	L.L["Name"] = "Name"
 	L.L["Restore"] = "Wiederherstellen"
+	L.L["Shared by"] = "Geteilt von:"
 end

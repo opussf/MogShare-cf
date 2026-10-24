@@ -27,4 +27,5 @@ if GetLocale() == "zhTW" then
 	L.L["Name this set:"] = "為此套裝命名："
 	L.L["Name"] = "名稱"
 	L.L["Restore"] = "還原"
+	L.L["Shared by"] = "分享者："
 end

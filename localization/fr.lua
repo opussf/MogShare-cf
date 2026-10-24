@@ -27,4 +27,5 @@ if GetLocale() == "frFR" then
 	L.L["Name this set:"] = "Nommer cet ensemble :"
 	L.L["Name"] = "Nom"
 	L.L["Restore"] = "Restaurer"
+	L.L["Shared by"] = "Partagé par:"
 end

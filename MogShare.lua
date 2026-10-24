@@ -2,6 +2,7 @@ MS_SLUG, MS = ...
 MS.MSG_ADDONNAME = C_AddOns.GetAddOnMetadata( MS_SLUG, "Title" )
 MS.MSG_VERSION   = C_AddOns.GetAddOnMetadata( MS_SLUG, "Version" )
 MS.MSG_AUTHOR    = C_AddOns.GetAddOnMetadata( MS_SLUG, "Author" )
+MS.SCAN_VERSION  = 2
 
 MS_Data = {}
 MS_Options = { sortBy = "lastScan" }
@@ -173,6 +174,7 @@ end
 function MS.ScanItems( mogLink )
 	local list = C_TransmogCollection.GetItemTransmogInfoListFromCustomSetHyperlink( mogLink )
 	if list then
+		MS_Data[mogLink].scanVersion = MS.SCAN_VERSION
 		MS_Data[mogLink].itemNames = {}
 		for slot, itemInfo in pairs( list ) do
 			local sourceInfo = C_TransmogCollection.GetAppearanceSourceInfo( itemInfo.appearanceID )
@@ -187,6 +189,11 @@ function MS.ScanItems( mogLink )
 						MS_Data[mogLink].itemNames[itemName] = true
 					end)
 				end
+			end
+			local illusionName, illusionLink = C_TransmogCollection.GetIllusionStrings( itemInfo.illusionID )
+			-- local name, hyperlink, sourceText = C_TransmogCollection.GetIllusionStrings(illusionID)
+			if illusionName then
+				MS_Data[mogLink].itemNames[string.format(TRANSMOGRIFIED_ENCHANT, illusionName)] = true
 			end
 		end
 	end
@@ -220,7 +227,7 @@ function MS.MakeMissingItemLists()
 
 	MS.scanCO = coroutine.create(function()
 		for mogLink, data in pairs(MS_Data) do
-			if not data.itemNames then
+			if not data.itemNames or (data.scanVersion or 1) < MS.SCAN_VERSION then
 				MS.ScanItems( mogLink )
 				coroutine.yield()
 			end
@@ -229,6 +236,66 @@ function MS.MakeMissingItemLists()
 
 	MS.MakeMissingStep()
 end
-function MS.Command(msg)
+function MS.PhotoShoot( param )
+	-- show the frame
+	MS.gameOn = nil
+	MS.gameItems = nil
 	MogShareDisplayFrame:Show()
+	MogShareDisplayFrame_MogListVSlider:SetValue(0)
+	-- set the prefered sort, and the search
+	MS.SetSortFunction({value="rank"})
+	MogShareDisplayFrame_SearchBox:SetText( param )
+	-- click the first one to open the dressing room.
+	MS_MogList_Button1:Click()
+	-- hide some of my frames
+	if INEEDUIListFrame then INEEDUIListFrame:Hide() end
+	if EndeavorFrame then EndeavorFrame:Hide() end
+	if RestedUIFrame then RestedUIFrame:Hide() end
+
+	-- set my prefered view
+	local c=DressUpFrame.ModelScene:GetActiveCamera()
+	c:SetYaw(2.58)
+	c:SetZoomDistance(3.52)
+
+	local n = 1
+	local function z()
+		local b = _G["MS_MogList_Button"..n]
+		if b:IsShown() then
+			b:Click()
+			C_Timer.After( 0.6, function() Screenshot(); end )
+			n = n + 1
+			if n < 16 then
+				C_Timer.After( 1, z )
+			end
+		end
+	end
+	C_Timer.After( 1, z )
 end
+function MS.ParseCmd( msg )
+	if msg then
+		msg = string.lower( msg )
+		local s, l, c = strfind( msg, "(%S+)" )  -- contiguous string of non-space characters. start, length, matched
+		if s then
+			-- c is the matched string, strsub returns everthing after that, skipping the space
+			return c, strsub( msg, l+2 )
+		else
+			return ""
+		end
+	end
+end
+function MS.Command( msg )
+	local cmd, param = MS.ParseCmd( msg )
+	local cmdFunc = MS.CommandList[cmd]
+	if cmdFunc then
+		cmdFunc.func( param )
+	else
+		MogShareDisplayFrame:Show()
+	end
+end
+
+MS.CommandList = {
+	["photoshoot"] = {
+		["func"] = MS.PhotoShoot,
+		-- no ["help"] makes it hidden, if I ever put in a help.
+	},
+}

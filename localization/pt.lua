@@ -27,4 +27,5 @@ if GetLocale() == "ptBR" then
 	L.L["Name this set:"] = "Dê um nome a este conjunto:"
 	L.L["Name"] = "Nome"
 	L.L["Restore"] = "Restaurar"
+	L.L["Shared by"] = "Compartilhado por:"
 end

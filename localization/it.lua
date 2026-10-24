@@ -27,4 +27,5 @@ if GetLocale() == "itIT" then
 	L.L["Name this set:"] = "Assegna un nome a questo set:"
 	L.L["Name"] = "Nome"
 	L.L["Restore"] = "Ripristina"
+	L.L["Shared by"] = "Condiviso da:"
 end

@@ -27,4 +27,5 @@ if GetLocale() == "esES" or GetLocale() == "esMX" then
 	L.L["Name this set:"] = "Nombra este conjunto:"
 	L.L["Name"] = "Nombre"
 	L.L["Restore"] = "Restaurar"
+	L.L["Shared by"] = "Compartido por:"
 end

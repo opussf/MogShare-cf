@@ -27,4 +27,5 @@ if GetLocale() == "koKR" then
 	L.L["Name this set:"] = "세트 이름:"
 	L.L["Name"] = "이름"
 	L.L["Restore"] = "복원"
+	L.L["Shared by"] = "공유한 사람:"
 end

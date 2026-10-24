@@ -27,4 +27,5 @@ if GetLocale() == "ruRU" then
 	L.L["Name this set:"] = "Назовите этот набор:"
 	L.L["Name"] = "Название"
 	L.L["Restore"] = "Восстановить"
+	L.L["Shared by"] = "Поделился:"
 end
