@@ -90,8 +90,11 @@ function MS.Set_mixin:OnEnter()
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:ClearLines()
 
+		if MS_Data[self.link].name then
+			GameTooltip:AddLine( MS_Data[self.link].name, 1, 1, 1 )
+		end
 		GameTooltip:AddLine(
-				MS_Data[self.link].name or string.format("%s: %s", MS.L["Last Scan"], date("%X %x", MS_Data[self.link].lastScan)),
+				string.format("%s: %s", MS.L["Last Scan"], date("%X %x", MS_Data[self.link].lastScan)),
 				1, 1, 1)
 		GameTooltip:AddLine(" ")
 
