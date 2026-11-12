@@ -320,7 +320,7 @@ MS.localizedFields = {
 }
 
 function MS.ParseNumericFilter(textIn)
-	local field, op, num = textIn:match("^(.+)%s*([<>=]+)%s*(%-?%d+)$")
+	local field, op, num = textIn:match("^([^<>=%s]+)%s*([<>=]+)%s*(%-?%d+)$")
 
 	local localField = field and MS.localizedFields[field]
 
@@ -373,27 +373,27 @@ end
 function MS.UI_ShowList()
 	MS.UI_BuildItemDisplay()
 	local count = 1
-	local sortedItems = {}
 	if MS.gameOn then
 		MS.gameItems = MS.gameItems or MS.PickNextPair()
-		sortedItems = MS.gameItems
-	else
+		MS.sortedItems = MS.gameItems
+	elseif not MS.sortedItems then
+		MS.sortedItems = {}
 		for k in pairs( MS_Data ) do
 			if ((MS.showArchived and MS_Data[k].archived) or (not MS.showArchived and not MS_Data[k].archived))
 					and MS.MogMatched( MS_Data[k] ) then
-				table.insert(sortedItems, k)
+				table.insert(MS.sortedItems, k)
 			end
 		end
-		table.sort( sortedItems, MS.sortFunctions[MS_Options.sortBy].sortFun )
+		table.sort( MS.sortedItems, MS.sortFunctions[MS_Options.sortBy].sortFun )
 	end
 	local offset = floor(MogShareDisplayFrame_MogListVSlider:GetValue())
-	MogShareDisplayFrame_MogListVSlider:SetMinMaxValues(0, max(0, #sortedItems - #MS.UISet_Buttons))
+	MogShareDisplayFrame_MogListVSlider:SetMinMaxValues(0, max(0, #MS.sortedItems - #MS.UISet_Buttons))
 
 	while count <= #MS.UISet_Buttons do
 		local buttonFrame = MS.UISet_Buttons[count]
 
-		if count + offset <= #sortedItems then
-			local link = sortedItems[count+offset]
+		if count + offset <= #MS.sortedItems then
+			local link = MS.sortedItems[count+offset]
 			local lastScan = MS_Data[link].lastScan
 
 			buttonFrame.link = link
@@ -431,7 +431,10 @@ function MS.UISearchTextChanged(self, userInput)
 	end
 
 	MS.searchFilter = self:GetText():lower()
-	MS.UIUpdate()  -- reuse your existing refresh, just have it check MS.searchFilter now
+	C_Timer.After(0.5, function()
+		MS.sortedItems = nil
+		MS.UIUpdate()
+	end)
 end
 
 ------
