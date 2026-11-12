@@ -163,6 +163,7 @@ function MS.GameButtonOnClick()
 		MogShareDisplayFrame_SearchBox:ClearFocus()
 		MogShareDisplayFrame_SearchBox:SetTextColor(0.5, 0.5, 0.5)
 	else
+		MS.sortedItems = nil
 		MS.gameItems = nil  -- clear the gameItems when the game ends
 		MogShareDisplayFrame_SearchBox:Enable()
 		MogShareDisplayFrame_SearchBox:SetTextColor(1, 1, 1)
