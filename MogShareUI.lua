@@ -79,8 +79,10 @@ function MS.Set_mixin:OnActionButtonClick(button)
 		MS.gameItems = nil
 	elseif MS.showArchived then  -- restoring
 		MS_Data[self.link].archived = nil
+		MS.sortedItems = nil
 	else  -- Archiving
 		MS_Data[self.link].archived = time()
+		MS.sortedItems = nil
 	end
 	MS.provisionalThreshold = MS.GetELOProvisionalThreshold()
 	MS.UI_ShowList()
