@@ -228,7 +228,7 @@ function MS.UIUpdate()
 end
 function MS.UIOnShow()
 	MS.UI_BuildDropDowns()
-	MS.UI_BuildItemDisplay()
+	MS.sortedItems = nil
 	MS.UI_ShowList()
 end
 function MS.UIOnHide( mogframe )
