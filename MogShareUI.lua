@@ -269,6 +269,7 @@ function MS.SortDropDownPopulate( self, level, menuList )
 	info.func = function()
 		MS.showArchived = not MS.showArchived
 		MogShareDisplayFrame_MogListVSlider:SetValue(0)
+		MS.sortedItems = nil
 		MS.UI_ShowList()
 	end
 	UIDropDownMenu_AddButton( info, level )
@@ -279,6 +280,7 @@ function MS.SetSortFunction( info )
 	-- takes the info table
 	MS_Options.sortBy = info.value
 	UIDropDownMenu_SetText( MogShareDisplayFrame_SortDropDownMenu, MS.sortFunctions[info.value].text )
+	MS.sortedItems = nil
 	MS.UI_ShowList()
 end
 
