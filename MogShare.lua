@@ -51,7 +51,7 @@ function MS.PLAYER_TARGET_CHANGED()
 	end
 end
 function MS.INSPECT_READY(guid)
-	if guid == MS.pendingGUID then
+	if not issecretvalue(guid) and not issecretvalue(MS.pendingGUID) and guid == MS.pendingGUID then
 		local targetMogList = C_TransmogCollection.GetInspectItemTransmogInfoList()
 		local mogLink = C_TransmogCollection.GetCustomSetHyperlinkFromItemTransmogInfoList(targetMogList)
 
